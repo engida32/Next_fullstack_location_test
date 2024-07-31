@@ -1,5 +1,6 @@
 import Head from "next/head";
 import MapAndLocations from "@/component/MapContianer";
+import GoogleMapAndLocations from "@/component/GoogleMapContainer";
 
 export default function Home() {
   return (
@@ -11,7 +12,8 @@ export default function Home() {
 
       <main>
         <h1>Location Mapper</h1>
-        <MapAndLocations />
+        {/* <MapAndLocations /> */}
+        <GoogleMapAndLocations />
       </main>
     </div>
   );
