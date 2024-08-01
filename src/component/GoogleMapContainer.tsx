@@ -115,9 +115,16 @@ const GoogleMapAndLocations = () => {
     }
   }, [route]);
   const fetchLocations = async () => {
-    const response = await fetch("/api/locations");
-    const data = await response.json();
-    setLocations(data);
+    try {
+      const response = await fetch("/api/locations");
+      if (!response.ok) {
+        throw new Error("Failed to fetch locations");
+      }
+      const data = await response.json();
+      setLocations(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const deleteLocations = async () => {
