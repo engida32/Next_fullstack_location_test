@@ -116,6 +116,3 @@ Prisma is used as the ORM to interact with the PostgreSQL database. The Prisma s
 - `DATABASE_URL`: Connection string for the PostgreSQL database.
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API key for map-related features.
 
-## Repository
-
-The full project is hosted on: [Next.js Location Mapping Application](https://github.com/engida32/Next_fullstack_location_test.git)
