@@ -40,22 +40,31 @@ const MapAndLocations = () => {
   }, []);
 
   const fetchLocations = async () => {
-    const response = await fetch("/api/locations");
-    if (response.ok) {
-      const data = await response.json();
-      setLocations(data);
-    } else {
-      alert("Failed to fetch locations");
+    try {
+      const response = await fetch("/api/locations");
+      if (response.ok) {
+        const data = await response.json();
+        setLocations(data);
+      } else {
+        alert("Failed to fetch locations");
+      }
+    } catch (error) {
+      console.error("Error fetching locations:", error);
     }
   };
+
   const deleteLocations = async () => {
-    const response = await fetch("/api/locations", {
-      method: "DELETE",
-    });
-    if (response.ok) {
-      setLocations([]);
-    } else {
-      alert("Failed to delete locations");
+    try {
+      const response = await fetch("/api/locations", {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setLocations([]);
+      } else {
+        alert("Failed to delete locations");
+      }
+    } catch (error) {
+      console.error("Error deleting locations:", error);
     }
   };
 
@@ -65,31 +74,39 @@ const MapAndLocations = () => {
       return;
     }
 
-    const response = await fetch("/api/locations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: newLocationName,
-        latitude: lat,
-        longitude: lng,
-      }),
-    });
+    try {
+      const response = await fetch("/api/locations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newLocationName,
+          latitude: lat,
+          longitude: lng,
+        }),
+      });
 
-    if (response.ok) {
-      setNewLocationName("");
-      fetchLocations();
-    } else {
-      alert("Failed to add location");
+      if (response.ok) {
+        setNewLocationName("");
+        fetchLocations();
+      } else {
+        alert("Failed to add location");
+      }
+    } catch (error) {
+      console.error("Error adding location:", error);
     }
   };
 
   const calculateRoute = async () => {
-    const response = await fetch("/api/calculate-route");
-    if (response.ok) {
-      const calculatedRoute = await response.json();
-      setRoute(calculatedRoute);
-    } else {
-      alert("Failed to calculate route");
+    try {
+      const response = await fetch("/api/calculate-route");
+      if (response.ok) {
+        const calculatedRoute = await response.json();
+        setRoute(calculatedRoute);
+      } else {
+        alert("Failed to calculate route");
+      }
+    } catch (error) {
+      console.error("Error calculating route:", error);
     }
   };
 
@@ -110,23 +127,21 @@ const MapAndLocations = () => {
               title={location.name}
               icon={L.icon({
                 iconUrl:
-                  "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                iconSize: [30, 35],
-                iconAnchor: [22, 94],
-                popupAnchor: [-3, -76],
+                  "https://cdn.mapmarker.io/api/v1/pin?size=20&hoffset=1&voffset=-1&color=%23d00&icon=fas.fa-map-marker-alt",
+                iconSize: [28, 25],
+                iconAnchor: [14, 25],
+                popupAnchor: [0, -25],
               })}
             />
           ))}
           {route.length > 0 && (
-            <>
-              <Polyline
-                positions={[...route, route[0]].map((loc) => [
-                  loc.latitude,
-                  loc.longitude,
-                ])}
-                color="red"
-              />
-            </>
+            <Polyline
+              positions={[...route, route[0]].map((loc) => [
+                loc.latitude,
+                loc.longitude,
+              ])}
+              color="red"
+            />
           )}
         </MapContainer>
         <div
@@ -139,7 +154,6 @@ const MapAndLocations = () => {
             gap: "10px",
           }}
         >
-          {" "}
           <input
             type="text"
             value={newLocationName}
