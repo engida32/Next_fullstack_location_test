@@ -18,13 +18,13 @@ interface Location {
 }
 
 const MapEvents = ({
-  onLocationAdded,
+  onMapClick,
 }: {
-  onLocationAdded: (lat: number, lng: number) => void;
+  onMapClick: (lat: number, lng: number) => void;
 }) => {
   useMapEvents({
     click(e) {
-      onLocationAdded(e.latlng.lat, e.latlng.lng);
+      onMapClick(e.latlng.lat, e.latlng.lng);
     },
   });
   return null;
@@ -33,6 +33,9 @@ const MapEvents = ({
 const MapAndLocations = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [newLocationName, setNewLocationName] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<
+    [number, number] | null
+  >(null);
   const [route, setRoute] = useState<Location[]>([]);
 
   useEffect(() => {
@@ -68,7 +71,15 @@ const MapAndLocations = () => {
     }
   };
 
-  const handleLocationAdded = async (lat: number, lng: number) => {
+  const handleMapClick = (lat: number, lng: number) => {
+    setSelectedLocation([lat, lng]);
+  };
+
+  const handleAddLocation = async () => {
+    if (!selectedLocation) {
+      alert("Please select a location on the map first");
+      return;
+    }
     if (newLocationName.trim() === "") {
       alert("Please enter a name for the location");
       return;
@@ -80,13 +91,14 @@ const MapAndLocations = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: newLocationName,
-          latitude: lat,
-          longitude: lng,
+          latitude: selectedLocation[0],
+          longitude: selectedLocation[1],
         }),
       });
 
       if (response.ok) {
         setNewLocationName("");
+        setSelectedLocation(null);
         fetchLocations();
       } else {
         alert("Failed to add location");
@@ -119,7 +131,7 @@ const MapAndLocations = () => {
           style={{ height: "600px" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <MapEvents onLocationAdded={handleLocationAdded} />
+          <MapEvents onMapClick={handleMapClick} />
           {locations.map((location) => (
             <Marker
               key={location.id}
@@ -134,6 +146,18 @@ const MapAndLocations = () => {
               })}
             />
           ))}
+          {selectedLocation && (
+            <Marker
+              position={selectedLocation}
+              icon={L.icon({
+                iconUrl:
+                  "https://cdn.mapmarker.io/api/v1/pin?size=20&hoffset=1&voffset=-1&color=%230070f3&icon=fas.fa-map-marker-alt",
+                iconSize: [28, 25],
+                iconAnchor: [14, 25],
+                popupAnchor: [0, -25],
+              })}
+            />
+          )}
           {route.length > 0 && (
             <Polyline
               positions={[...route, route[0]].map((loc) => [
@@ -168,7 +192,27 @@ const MapAndLocations = () => {
               boxSizing: "border-box",
             }}
           />
-          <p>Click on the map to add a new location</p>
+          <button
+            onClick={handleAddLocation}
+            disabled={!selectedLocation || !newLocationName.trim()}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "4px",
+              border: "none",
+              backgroundColor:
+                selectedLocation && newLocationName ? "#0070f3" : "#ccc",
+              color: "#fff",
+              cursor: selectedLocation ? "pointer" : "not-allowed",
+              fontSize: "16px",
+              transition: "background-color 0.3s",
+            }}
+          >
+            Add Location
+          </button>
+          <p>
+            Click on the map to select a location, then enter a name and click
+            <strong> Add Location</strong>
+          </p>
           <button
             onClick={calculateRoute}
             style={{
@@ -180,6 +224,7 @@ const MapAndLocations = () => {
               cursor: "pointer",
               fontSize: "16px",
               transition: "background-color 0.3s",
+              marginRight: "10px",
             }}
           >
             Calculate Route
@@ -187,7 +232,6 @@ const MapAndLocations = () => {
           <button
             onClick={deleteLocations}
             style={{
-              marginTop: "10px",
               padding: "10px 20px",
               borderRadius: "4px",
               border: "none",
@@ -196,7 +240,6 @@ const MapAndLocations = () => {
               cursor: "pointer",
               fontSize: "16px",
               transition: "background-color 0.3s",
-              marginLeft: "10px",
             }}
           >
             Delete Saved Locations
