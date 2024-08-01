@@ -6,6 +6,7 @@ import MapAndLocations from "@/component/MapContianer";
 
 export default function Home() {
   const [useGoogleMap, setUseGoogleMap] = useState(true);
+  if (typeof window === "undefined") return;
 
   return (
     <div
