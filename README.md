@@ -116,3 +116,19 @@ Prisma is used as the ORM to interact with the PostgreSQL database. The Prisma s
 - `DATABASE_URL`: Connection string for the PostgreSQL database.
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API key for map-related features.
 
+## Route Calculation Algorithm
+
+The application uses the Haversine formula to calculate the distance between two points on the Earth given their latitude and longitude. This formula is implemented in the following function:
+
+```typescript
+function distance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon1 - lon2) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
