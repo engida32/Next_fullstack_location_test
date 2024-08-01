@@ -2,13 +2,13 @@ FROM node:18-alpine AS base
 
 WORKDIR /app
 
-COPY package*.json ./
+ COPY package*.json ./
 RUN npm install
 
-COPY . .
+ COPY . .
 
-RUN npm run build
+ RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+ CMD npx prisma migrate deploy && npm run dev
