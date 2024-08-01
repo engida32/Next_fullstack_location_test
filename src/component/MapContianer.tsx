@@ -8,6 +8,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 interface Location {
   id: number;
@@ -107,6 +108,13 @@ const MapAndLocations = () => {
               key={location.id}
               position={[location.latitude, location.longitude]}
               title={location.name}
+              icon={L.icon({
+                iconUrl:
+                  "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                iconSize: [30, 35],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -76],
+              })}
             />
           ))}
           {route.length > 0 && (
