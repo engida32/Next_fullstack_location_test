@@ -40,8 +40,12 @@ const MapAndLocations = () => {
 
   const fetchLocations = async () => {
     const response = await fetch("/api/locations");
-    const data = await response.json();
-    setLocations(data);
+    if (!response.ok) {
+      const data = await response.json();
+      setLocations(data);
+    } else {
+      alert("Failed to fetch locations");
+    }
   };
   const deleteLocations = async () => {
     const response = await fetch("/api/locations", {
