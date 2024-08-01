@@ -32,7 +32,6 @@ const GoogleMapAndLocations = () => {
 
   useEffect(() => {
     const loader = new Loader({
-      // apiKey: "AIzaSyA1a2gWqYgNZ1Gg5dpNRIVfkSu3qTcHz_g", // Replace with your actual API key
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
       version: "weekly",
     });
@@ -266,6 +265,10 @@ const GoogleMapAndLocations = () => {
           >
             Delete Saved Locations
           </button>
+          <p style={{ marginTop: "10px", fontSize: "14px", lineHeight: "1.5" }}>
+            Click calculate route to see the shortest path that visits all saved
+            locations
+          </p>
         </div>
       </div>
       <div
