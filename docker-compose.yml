@@ -10,6 +10,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/testDB
+    command: ["npm", "run", "start"]
 
   db:
     image: postgres:13

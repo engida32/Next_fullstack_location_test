@@ -1,9 +1,15 @@
 "use client";
 import { useState } from "react";
 import Head from "next/head";
-import GoogleMapAndLocations from "@/component/GoogleMapContainer";
-import MapAndLocations from "@/component/MapContianer";
+import dynamic from "next/dynamic";
 
+const GoogleMapAndLocations = dynamic(
+  () => import("@/component/GoogleMapContainer"),
+  { ssr: false }
+);
+const MapAndLocations = dynamic(() => import("@/component/MapContianer"), {
+  ssr: false,
+});
 export default function Home() {
   const [useGoogleMap, setUseGoogleMap] = useState(true);
   if (typeof window === "undefined") return;
